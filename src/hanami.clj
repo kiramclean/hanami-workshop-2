@@ -47,3 +47,33 @@
 ;; Data from [Our World in Data](https://ourworldindata.org/grapher/temperature-anomaly?country=~Global)
 
 (clerk/vl error-bar-chart)
+
+(def birthweight-data
+  (-> "/Users/kira/code/projects/hanami-workshop-2/data/birthwt.csv"
+      (tc/dataset {:key-fn keyword})
+      ))
+
+(def cars
+  {:$schema "https://vega.github.io/schema/vega-lite/v5.json",
+   :data (-> "/Users/kira/code/projects/hanami-workshop-2/data/cars.csv"
+             (tc/rows :as-maps)),
+   :mark "bar",
+   :encoding
+   {:x {:bin {:maxbins 15}, :field "Horsepower", :type "quantitative"},
+    :y {:aggregate "count", :type "quantitative"},
+    :row {:field "Origin"}}})
+
+(def histogram
+  {:description "Birthweights",
+   :data (-> birthweight-data (tc/rows :as-maps))
+   :width {:step 17},
+   :mark "bar",
+   :encoding
+   {;;:row {:field "gender"},
+    :y {:aggregate "count", :title "count"},
+    :x {:field :bwt
+        :bin {:maxbins 15}},
+    ;; :color ;; {:field "gender", :scale {:range ["#675193" "#ca8861"]}}
+    }})
+
+(clerk/vl histogram)
